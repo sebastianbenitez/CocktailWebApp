@@ -13,6 +13,8 @@ var options = {
 };
 
 var randomCocktail;
+
+// obtengo cocktail al azar
 request(options, function (error, response, body) {
 	if (error) throw new Error(error);
 	
@@ -20,18 +22,21 @@ request(options, function (error, response, body) {
 	randomCocktail = parsed.drinks[0];
 });
 
+// mediante el id del cocktail al azar, obtengo la informacion restante
 options.url = 'https://the-cocktail-db.p.rapidapi.com/lookup.php';
 options.qs= {
 	i: randomCocktail.idDrink
 };
+request(options, function (error, response, body) {
+	if (error) throw new Error(error);
+	
+	var parsed = JSON.parse(body);
+	randomCocktail = parsed.drinks[0];
+});
+
 
 router.get('/', function(req, res, next) {
-	request(options, function (error, response, body) {
-		if (error) throw new Error(error);
-		
-		var parsed = JSON.parse(body);
-		res.render('index', { cocktail: parsed.drinks[0] });
-	});
+	res.render('index', { cocktail: randomCocktail });
 });
 
 
